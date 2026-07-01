@@ -12,9 +12,9 @@ from dagobert.live import evolve_generator
 # GUI setup
 # ----------------------------
 root = tk.Tk()
-root.title("Dagobert Evolution Live Demo")
+root.title("Dagobert Live Evolution")
 
-# Matplotlib figure
+# Matplotlib figure for best fitness
 fig, ax = plt.subplots(figsize=(6, 4))
 line, = ax.plot([], [], label="Best Fitness")
 ax.set_xlabel("Generation")
@@ -65,6 +65,7 @@ def run_evolution():
     line.set_ydata([])
     best_history = []
 
+    # Create the generator
     gen = evolve_generator(
         pop,
         rng,
@@ -73,18 +74,23 @@ def run_evolution():
         elite_frac=elite_var.get()
     )
 
+    # Update function called repeatedly
     def update():
         nonlocal gen
         try:
             pop, fitnesses = next(gen)
             best = fitnesses.max()
             best_history.append(best)
+
+            # Update plot
             line.set_xdata(range(len(best_history)))
             line.set_ydata(best_history)
             ax.relim()
             ax.autoscale_view()
             canvas.draw()
-            root.after(100, update)  # schedule next update in 100 ms
+
+            # Schedule next update
+            root.after(100, update)
         except StopIteration:
             print("Evolution finished!")
 

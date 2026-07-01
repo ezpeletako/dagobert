@@ -1,5 +1,4 @@
-import numpy as np
-from dagobert.vector_replicator import VectorReplicator
+from dagobert.replicators.vector_replicator import VectorReplicator
 from dagobert.population import evolve
 from dagobert.rng import make_rng
 
@@ -13,6 +12,6 @@ def test_fitness_improves():
     best = []
     for _ in range(30):
         pop, fitnesses = evolve(pop, rng)
-        best.append(fitnesses.max())
+        best.append(float(max(fitnesses)))  # Convert numpy scalar for comparison
 
-    assert best[-1] > best[0]
+    assert best[-1] > best[0], f"No improvement: {best[0]} → {best[-1]}"
